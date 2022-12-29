@@ -25,12 +25,7 @@ async function run() {
         //     const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2d' })
         //     res.send({ token })
         // })
-        // app.get('/services', async (req, res) => {
-        //     const query = {}
-        //     const cursor = serviceCollection.find(query).limit(3);
-        //     const services = await cursor.toArray();
-        //     res.send(services);
-        // });
+
         app.post('/tasks', async (req, res) => {
             const task = req.body;
             const result = await tasksCollection.insertOne(task);
@@ -57,6 +52,18 @@ async function run() {
             const result = await tasksCollection.deleteOne(query);
             res.send(result);
         });
+        app.patch('/tasks/:id', async (req, res) => {
+            const id = req.params.id;
+            const taskDescription = req.body.taskDescription
+            const query = { _id: ObjectId(id) }
+            const updatedTask = {
+                $set: {
+                    taskDescription: taskDescription
+                }
+            }
+            const result = await tasksCollection.updateOne(query, updatedTask);
+            res.send(result);
+        })
     }
     finally {
 
